@@ -176,6 +176,22 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 		if(position <= 0){
 			throw new IllegalArgumentException();
 		}
+		if(elem == null){
+			throw new NullPointerException();
+		}
+		else{
+			if(position > this.size()){
+				addLast(elem);
+			}
+			else{
+				DoubleNode<T>newNode = new DoubleNode<>(elem);
+				DoubleNode<T>current = front;
+				for (int i=0; i<position; i++){
+					current = current.next;
+				}
+				newNode.next = current;
+			}
+		}
 		
 	}
 
