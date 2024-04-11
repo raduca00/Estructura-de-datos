@@ -13,13 +13,13 @@ public class DoubleLinkedImplTest {
 	public void antesDe() {
 		lv=new DoubleLinkedListImpl<String>();
 		listaConElems=new DoubleLinkedListImpl<String>("A","B","C","A","B","D");
-		listaConElems.addFirst("D");
+		/*listaConElems.addFirst("D");
 		listaConElems.addFirst("B");
 		listaConElems.addFirst("A");
 		listaConElems.addFirst("C");
 		listaConElems.addFirst("B");
 		listaConElems.addFirst("A");
-        
+        */
 	}
 
 

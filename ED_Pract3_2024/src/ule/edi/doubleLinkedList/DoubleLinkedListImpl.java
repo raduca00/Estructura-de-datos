@@ -190,6 +190,15 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 					current = current.next;
 				}
 				newNode.next = current;
+				newNode.prev = current.prev;
+
+				if(current.prev != null){
+					current = newNode;
+				}
+				else{
+					front = newNode;
+				}
+				current.prev = newNode;
 			}
 		}
 		
@@ -201,15 +210,42 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	public T getElemPos(int position) {
 		
 		//TODO
-		return null;
+		if(position < 1 || position > this.size()) {
+			throw new IllegalArgumentException();
+		}
+		else {
+			DoubleNode<T>current = front;
+			int i=0;
+			while(i != position-1) {
+				i++;
+				current = current.next;
+			}
+			
+			return current.elem;
+		}
 	}
 
 
 	@Override
 	public int getPosFirst(T elem) {
 		//TODO
-
-		return 0;
+		
+		if(elem == null) {
+			throw new NullPointerException();
+		}
+		else {
+			DoubleNode<T>current = front;
+			int i=0;
+			while(current != null) {
+				i++;
+				if(current.elem.equals(elem)) {
+					return i;
+				}
+				current = current.next;
+			}
+			throw new NoSuchElementException();
+			
+		}
 	}
 
 
@@ -217,23 +253,83 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	public int getPosLast(T elem) {
 		//TODO
 
-		return 0;
+		if(elem == null) {
+			throw new NullPointerException();
+		}
+		else {
+			int i=this.size();
+			DoubleNode<T>current = last;
+			while(current != null) {
+				if(current.elem.equals(elem)) {
+					return i;
+				}
+				current= current.prev;
+				i--;
+			}
+			
+			throw new NoSuchElementException();
+		}
+		
 	}
 
 	
 	@Override
 	public T removeLast()  throws EmptyCollectionException{
 		//TODO
-		return null;
+		if(isEmpty()) {
+			throw new EmptyCollectionException("Vacia");
+		}
+		else {
+			T removedElem;
+			if(this.size() == 1) {
+				removedElem = last.elem;
+			}
+			else{
+				removedElem = last.elem;
+				last = last.prev;
+				last.next = null;
+			}
+			return removedElem;
+		}
 	}
 	
 
 	@Override
 	public T removePos(int pos)  throws EmptyCollectionException{
 		// TODO
-		return null;
-	
-
+		if(isEmpty()) {
+			throw new EmptyCollectionException("Vacia");
+		}
+		
+		if(pos<1 || pos>this.size()) {
+			throw new IllegalArgumentException();
+		}
+		T removedElem;
+		DoubleNode<T>current = front;
+		if (pos == 1) { // Si la posición es la primera
+			removedElem = front.elem;
+			front = front.next; // Mueve el front al siguiente nodo
+			if(front != null) {
+				front.prev = null; // Actualiza la referencia prev del nuevo front a null
+			}
+			else {
+		            last = null; // Si la lista queda vacía, también actualiza last a null
+		        }
+		    } else {
+		        for (int i = 1; i < pos; i++) {
+		            current = current.next; // Avanza hasta la posición deseada
+		        }
+		        removedElem = current.elem;
+		        current.prev.next = current.next; // Elimina el nodo actual
+		        if (current.next != null) {
+		            current.next.prev = current.prev; // Actualiza la referencia prev del nodo siguiente
+		        } else {
+		            last = current.prev; // Si el nodo que estamos eliminando es el último, actualiza last
+		        }
+		    }
+			return removedElem;
+			
+		
 	}
 
 
@@ -345,21 +441,58 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	@Override
 	public String toStringReverse() {
 		// TODO
-		return "";
+		StringBuilder result = new StringBuilder();
+		DoubleNode<T>current = last;
+		
+		result.append("(");
+		while(current != null) {
+			result.append(current.elem + " ");
+			current = current.prev;
+		}
+		result.append(")");
+		
+		return result.toString();
 	}
 
 
 	@Override
 	public String toStringFromUntil(int from, int until) {
 		// TODO
-				
-		return null;
+		StringBuilder result = new StringBuilder();
+		DoubleNode<T>current = front;
+		int i = 1;
+		
+		result.append("(");
+		while(current != null) {
+			if(i >= from && i<= until) {
+				result.append(current.elem + " ");
+			}
+			i++;
+			current = current.next;
+		}
+		result.append(")");
+		
+		return result.toString();
 	}
 	
 	@Override
 	public String toStringFromUntilReverse(int from, int until) {
 		// TODO Auto-generated method stub
-		return null;
+		StringBuilder result = new StringBuilder();
+		DoubleNode<T>current = last;
+		int i = this.size();
+		
+		result.append("(");
+		while(current != null) {
+			if(i >= from && i <= until) {
+				result.append(current.elem + " ");
+			}
+			i--;
+			current = current.prev;
+		}
+		result.append(")");
+		
+		return result.toString();
 	}
 
 
