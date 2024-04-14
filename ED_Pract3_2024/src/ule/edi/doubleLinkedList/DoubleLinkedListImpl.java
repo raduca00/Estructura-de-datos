@@ -269,7 +269,6 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 			
 			throw new NoSuchElementException();
 		}
-		
 	}
 
 	
@@ -306,25 +305,25 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 		}
 		T removedElem;
 		DoubleNode<T>current = front;
-		if (pos == 1) { // Si la posición es la primera
+		if (pos == 1) { 
 			removedElem = front.elem;
-			front = front.next; // Mueve el front al siguiente nodo
+			front = front.next;
 			if(front != null) {
-				front.prev = null; // Actualiza la referencia prev del nuevo front a null
+				front.prev = null;
 			}
 			else {
-		            last = null; // Si la lista queda vacía, también actualiza last a null
+		            last = null; 
 		        }
 		    } else {
 		        for (int i = 1; i < pos; i++) {
-		            current = current.next; // Avanza hasta la posición deseada
+		            current = current.next; 
 		        }
 		        removedElem = current.elem;
-		        current.prev.next = current.next; // Elimina el nodo actual
+		        current.prev.next = current.next;
 		        if (current.next != null) {
-		            current.next.prev = current.prev; // Actualiza la referencia prev del nodo siguiente
+		            current.next.prev = current.prev;
 		        } else {
-		            last = current.prev; // Si el nodo que estamos eliminando es el último, actualiza last
+		            last = current.prev; 
 		        }
 		    }
 			return removedElem;
@@ -344,7 +343,13 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	@Override
 	public DoubleList<T> copy() {
 		// TODO Auto-generated method stub
-		return null;
+		DoubleLinkedListImpl<T> copyList = new DoubleLinkedListImpl<>();
+    	DoubleNode<T> current = front;
+    	while (current != null) {
+        	copyList.addLast(current.elem);
+        	current = current.next;
+    	}
+    	return copyList;
 	}
 
 
@@ -366,7 +371,27 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	@Override
 	public int maxRepeated() {
 	// TODO
-		return 0;
+		if(isEmpty()){
+			return 0;
+		}
+		int max = 1;
+		DoubleNode<T>current = front;
+		while(current != null){
+			int count = 0;
+			DoubleNode<T> paso = front;
+			while(paso != null){
+				if(current.elem.equals(paso.elem)){
+					count++;
+				}
+				paso = paso.next;
+			}
+			if(count>max){
+				max = count;
+			}
+			current = current.next;
+		}
+
+		return max;
 	}
 
 
@@ -387,7 +412,25 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	@Override
 	public T removePenul() throws EmptyCollectionException {
 		// TODO Auto-generated method stub
-		return null;
+		if(isEmpty()){
+			throw new EmptyCollectionException("Vacio");
+		}
+		else{
+			if(front.next == null){
+				throw new EmptyCollectionException("Insufientes elementos");
+			}
+			else{
+				DoubleNode<T>current = front;
+				while(current.next.next != null){
+					current = current.next;
+				}
+				T removedElem = current.next.elem;
+				current.next = last;
+				last.prev = current;
+
+				return removedElem;
+			}
+		}
 	}
 
 
@@ -415,7 +458,22 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	@Override
 	public boolean sameElems(DoubleList<T> other) {
 		// TODO Auto-generated method stub
-		return false;
+		if (this.size() != other.size()){
+			return false;
+		}
+
+		Iterator<T> actual = this.iterator();
+		Iterator<T> otro = other.iterator();
+
+		while (actual.hasNext() && otro.hasNext()){
+			T elem1 = actual.next();
+			T elem2 = otro.next();
+
+			if(!elem1.equals(elem2)){
+				return false;
+			}
+		}
+		return true;
 	}
 
 
