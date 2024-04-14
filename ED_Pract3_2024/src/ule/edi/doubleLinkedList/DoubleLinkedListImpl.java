@@ -105,6 +105,63 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	
 	
 	// TODO: añadir clases para el resto de iteradores
+	@SuppressWarnings("hiding")
+	private class DoubleLinkedListProgress<T> implements Iterator<T> {
+    	private DoubleNode<T> node;
+    	private int step = 1;
+
+    	public DoubleLinkedListProgress(DoubleNode<T> aux) {
+        	this.node = aux;
+    	}
+
+    	@Override
+    	public boolean hasNext() {
+        	return node != null;
+    	}
+
+    	@Override
+    	public T next() {
+        	if (!hasNext()) {
+            	throw new NoSuchElementException();
+        	}
+
+        	T elem = node.elem;
+        	for (int i = 0; i < step && node != null; i++) {
+            node = node.prev;
+        }
+        step++;
+        return elem;
+    	}
+	}	
+
+	@SuppressWarnings("hiding")
+private class DoubleLinkedListProgressReverse<T> implements Iterator<T> {
+    private DoubleNode<T> node;
+    private int step = 1;
+
+    public DoubleLinkedListProgressReverse(DoubleNode<T> aux) {
+        this.node = aux;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return node != null;
+    }
+
+    @Override
+    public T next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
+
+        T elem = node.elem;
+        for (int i = 0; i < step && node != null; i++) {
+            node = node.prev; // Retrocede hacia atrás
+        }
+        step++;
+        return elem;
+    }
+}
 
 	/////
 	@SafeVarargs
@@ -399,6 +456,24 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	public void addAfter(T elem, T target) {
 		// TODO Auto-generated method stub
 		
+		if(elem == null || target == null){
+			throw new NullPointerException();
+		}
+
+		DoubleNode<T>current = front;
+		while (current != null && !current.elem.equals(target)){
+			current = current.next;
+		}
+		if(current == null){
+			addLast(elem);
+		}
+		else{
+			DoubleNode<T>newNode = new DoubleNode<>(elem);
+			newNode.next = current.next;
+			newNode.prev = current;
+			current.next = newNode;
+		}
+
 	}
 
 
@@ -569,13 +644,13 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	@Override
 	public Iterator<T> progressIterator() {
 		// TODO Auto-generated method stub
-		return null;
+		return new DoubleLinkedListProgress<>(front);
 	}
 
 	@Override
 	public Iterator<T> progressReverseIterator() {
 		// TODO Auto-generated method stub
-		return null;
+		return new DoubleLinkedListProgressReverse<>(last);
 	}
 
 
